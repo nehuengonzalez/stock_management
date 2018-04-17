@@ -1,0 +1,173 @@
+\documentclass[12pt,a4paper,spanish]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+%\usepackage[draft]{graphicx}
+\usepackage{float}
+\usepackage{pdfpages}
+\usepackage{amsfonts}
+%\usepackage{dot2texi}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+   
+\oddsidemargin -0.5cm
+\headsep -1cm
+\textwidth  17 cm
+\textheight  24cm
+\newcommand{\grad}{\hspace{-2mm}$\phantom{a}^{\circ}$}
+
+
+\usepackage{xcolor}
+\definecolor{gray97}{gray}{.90}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
+ 
+\usepackage{listings}
+\lstset{ frame=Ltb,
+     framerule=0pt,
+     aboveskip=0.5cm,
+     framextopmargin=3pt,
+     framexbottommargin=3pt,
+     framexleftmargin=0cm,
+     framesep=0pt,
+     rulesep=-0.4pt,
+     backgroundcolor=\color{gray97},
+     rulesepcolor=\color{black},
+     %
+     stringstyle=\ttfamily,
+     showstringspaces = false,
+     basicstyle=\small\ttfamily,
+     commentstyle=\color{teal},
+     keywordstyle=\textbf,
+     keywordstyle=\color{violet},
+     numbers=left,
+     numbersep=3pt,
+     numberstyle=\tiny,
+     numberfirstline = false,
+     breaklines=true,
+     basicstyle=\fontsize{9}{11}\selectfont\ttfamily
+   }
+
+
+\title{Stock management models}
+\begin{document}
+\maketitle
+
+
+\begin{center}
+
+\begin{tabular}{ll}
+\hline
+ & \textbf{Datos de entrada}  \\
+\hline
+$B,P$ & Número de bobinas, número de productos\\
+$L_b$ & Longitud de la bobina $b$, $b\in \{1,2,...,B\}$\\
+$L_p$ & Longitud del producto $p$, $p\in \{1,2,...,P\}$\\
+$B_{stock}$ & Máximo número de bobinas que pueden almacenarse en el deposito\\
+$D_max$ & Máximo desperdicio admisible (total)\\
+$D_{bp}$ & desperdicio ocacionado por producir el producto p en la bobina b \\
+
+\hline
+\end{tabular}
+\end{center}
+
+
+\section*{Modelo ILP}
+\begin{center}
+\begin{tabular}{ll}
+\hline
+ & \textbf{Variables}  \\
+\hline
+	$x_{b}$ & Binaria, es 1 si y solo si la bobina $b$ es usada para producir al menos un producto\\
+	$x_{bp}$  & Binaria, es 1 si y solo si el producto $p$ es producido utilizando la bobina $b$\\
+	$z $ & Entera, cantidad de bobinas en uso\\
+	$d $ & Continua, desperdicio total\\
+\hline
+\end{tabular}
+
+\end{center}
+
+\bigskip
+
+\newpage
+
+\begin{center}
+\large{Minimum number of coils problem (MCP)}
+\end{center}
+
+\textbf{Minimize:}
+\begin{equation}
+z
+\label{eq_obj}
+\end{equation}
+\bigskip
+
+
+\textbf{Subject to:}
+\begin{equation}
+\label{eq:totalBobinas}
+z=\sum_{b=1}^B{x_b}
+\end{equation}
+
+\bigskip
+\begin{equation}
+\sum_{b=1}^B{\sum_{p=1}^P{D_{bp} x_{bp}}} \leq D_{max}
+\label{eq:despTotal}
+\end{equation}
+
+\begin{equation}
+\sum_{b=1}^B{x_{bp}} = 1 \quad \quad   \forall p \in \{1,2,...,P\}
+\label{eq:asign}
+\end{equation}
+
+\begin{equation}
+x_b \geq x_{bp} \quad \quad   \forall p \in \{1,2,...,P\}, \forall b \in \{1,2,...,B\}
+\label{eq:bobinaUso}
+\end{equation}
+
+\begin{equation}
+	x_b,x_{bp} \in \{0,1\}, \quad z \in \mathbb{Z}, \quad z \geq 0 
+\end{equation}
+
+
+\newpage
+\begin{center}
+\large{Minimum waste problem (MWP)}
+\end{center}
+
+\textbf{Minimize:}
+\begin{equation}
+d
+\label{eq_obj}
+\end{equation}
+\bigskip
+
+
+\textbf{Subject to:}
+\begin{equation}
+\label{eq:totalBobinas}
+\sum_{b=1}^B{x_b} \leq B_{stock}
+\end{equation}
+
+\bigskip
+\begin{equation}
+d = \sum_{b=1}^B{\sum_{p=1}^P{D_{bp} x_{bp}}}
+\label{eq:despTotal}
+\end{equation}
+
+\begin{equation}
+\sum_{b=1}^B{x_{bp}} = 1 \quad \quad   \forall p \in \{1,2,...,P\}
+\label{eq:asign}
+\end{equation}
+
+\begin{equation}
+x_b \geq x_{bp} \quad \quad   \forall p \in \{1,2,...,P\}, \forall b \in \{1,2,...,B\}
+\label{eq:bobinaUso}
+\end{equation}
+
+\begin{equation}
+	x_b,x_{bp} \in \{0,1\}, \quad z \in \mathbb{Z}, \quad z \geq 0 
+\end{equation}
+
+
+\end{document}
